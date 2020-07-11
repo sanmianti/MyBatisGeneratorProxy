@@ -1,0 +1,93 @@
+<!DOCTYPE generatorConfiguration PUBLIC
+        "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+
+    <!--本地数据库驱动-->
+    <classPathEntry location="lib/mysql-connector-java-5.1.9.jar"/>
+
+    <!--运行环境，此处我们使用MyBatis3-->
+    <context id="dsql" targetRuntime="MyBatis3">
+
+        <!--注释构造器相关属性-->
+        <commentGenerator>
+            <!--是否覆盖注释添加时间，true:删除时间，false:保留时间（默认值）-->
+            <property name="suppressDate" value="false"/>
+            <!--是否添加数据库字段注释。注意如果suppressAllComments为true的话，该属性将不起作用-->
+            <property name="addRemarkComments" value="true"/>
+            <!--是否删除所有注释，true:删除所有注释，false:保留所有注释（默认值）-->
+            <property name="suppressAllComments" value="false"/>
+            <!--注释中自动添加的时间日期格式-->
+            <property name="dateFormat" value="YYYY-MM-dd HH:mm:ss"/>
+        </commentGenerator>
+
+        <!--数据库链接地址账号密码-->
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+                        connectionURL="jdbc:mysql://localhost:3306/shop?characterEncoding=utf-8"
+                        userId="root"
+                        password="123456"/>
+
+        <!--Model（POJO）类构造器, targetPackage是包名，targetProject是项目路径，
+        注意如果targetProject目录不存在的话MBG不会自动创建-->
+        <javaModelGenerator targetPackage="com.sanmianti.output.pojo"
+                            targetProject="src\main\java">
+            <!--是否将数据库schema名称作为子包名，即targetPackage+schema名称构成包名
+            todo 2020年7月11日17:41:38 这个属性值未起作用，不知为何-->
+            <property name="enableSubPackages" value="true"/>
+            <!--是否要裁剪掉字符串两端的空格。其实就是在Model里的set和get方法里面增加String.trim()调用-->
+            <property name="trimStrings" value="true"/>
+        </javaModelGenerator>
+
+        <!--Mapper接口类XML映射文件构造器-->
+        <sqlMapGenerator targetPackage="com.sanmianti.output.mapper"
+                         targetProject="src\main\java">
+            <property name="enableSubPackages" value="true"/>
+        </sqlMapGenerator>
+
+        <!--Mapper接口构造器-->
+        <javaClientGenerator type="XMLMAPPER"
+                             targetPackage="com.sanmianti.output.dao"
+                             targetProject="src\main\java">
+            <property name="enableSubPackages" value="true"/>
+        </javaClientGenerator>
+
+        <!--数据库表名-->
+        <table tableName="product"
+               enableCountByExample="false"
+               enableUpdateByExample="false"
+               enableDeleteByExample="false"
+               enableSelectByExample="false"
+               selectByExampleQueryId="false">
+            <!--插入时自增字段值回写，调用Mapper插入一条数据后，
+            能从当前这个Entity中获取到自增的字段值-->
+            <generatedKey column="product_id"
+                          sqlStatement="Mysql"
+                          identity="true"/>
+
+            <!--重命名POJO类名，此处根据表名生成的类名将由Product重命名为Product-->
+            <domainObjectRenamingRule searchString="Product"
+                                      replaceString="Product"/>
+
+            <!--重命名数据库字段值，此处会将数据表字段名中所有的"_id"替换为"_id"-->
+            <columnRenamingRule searchString="_id"
+                                replaceString="_id"/>
+
+            <!--重命名生成POJO类属性名或修改数据类型，此处sale_price这一列对应的POJO属性名将被替换为price，
+            数据类型将被修改为Long类型-->
+            <columnOverride column="sale_price"
+                            property="price"
+                            javaType="Long"/>
+
+            <!--指定表中哪些字段将被忽略掉，符合pattern正则的字段都将被忽略掉-->
+            <ignoreColumnsByRegex pattern="(?i)col.*">
+                <!--如下几个字段是例外情况，不会被忽略-->
+                <except column="col01"/>
+                <except column="col13"/>
+            </ignoreColumnsByRegex>
+
+            <!--指定表中哪些字段将被忽略掉,与ignoreColumnsByRegex属性值功能相同。-->
+            <ignoreColumn column="product_name_"/>
+
+        </table>
+    </context>
+</generatorConfiguration>
